@@ -1,1 +1,1 @@
-import client from "discord.js";
+console.log("Hello World");
