@@ -36,9 +36,29 @@ client.on("interactionCreate", async (interaction) => {
 
     const { commandName } = interaction;
 
-    if (commandName === "test") {
-        await interaction.reply("GOOD MORNING VIETNAM");
+    switch (commandName) {
+        case "test":
+            await interaction.reply("GOOD MORNING VIETNAM");
+            break;
+        case "tldr":
+            const todaysMessages = await tldr(interaction);
+            await interaction.reply(todaysMessages);
+            break;
     }
+    
 });
+
+async function tldr(interaction) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const messages = await interaction.channel.messages.fetch({ limit: 200 });
+    const todaysMessages = messages.filter(msg => {
+        const messageDate = new Date(msg.createdTimestamp);
+        return messageDate >= today;
+    });
+
+    return todaysMessages;
+}
 
 client.login(process.env.DISCORD_TOKEN);
