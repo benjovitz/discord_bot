@@ -44,15 +44,17 @@ client.on("interactionCreate", async (interaction) => {
             const todaysMessages = await tldr(interaction);
             await interaction.reply(todaysMessages);
             break;
+        default:
+            await interaction.reply("Invalid command");
+            break;
     }
-    
 });
 
 async function tldr(interaction) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const messages = await interaction.channel.messages.fetch({ limit: 200 });
+    const messages = await interaction.channel.messages.fetch({ limit: 100 });
     const todaysMessages = messages.filter(msg => {
         const messageDate = new Date(msg.createdTimestamp);
         return messageDate >= today;
