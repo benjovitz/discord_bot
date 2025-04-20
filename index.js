@@ -4,7 +4,11 @@ dotenv.config();
 import { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } from "discord.js";
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [
+    GatewayIntentBits.Guilds, 
+    GatewayIntentBits.GuildMessages, 
+    GatewayIntentBits.MessageContent
+  ],
 });
 
 const commands = [
@@ -42,7 +46,7 @@ client.on("interactionCreate", async (interaction) => {
             break;
         case "tldr":
             const todaysMessages = await tldr(interaction);
-            await interaction.reply(todaysMessages);
+             await interaction.reply(todaysMessages);
             break;
         default:
             await interaction.reply("Invalid command");
@@ -57,10 +61,13 @@ async function tldr(interaction) {
     const messages = await interaction.channel.messages.fetch({ limit: 100 });
     const todaysMessages = messages.filter(msg => {
         const messageDate = new Date(msg.createdTimestamp);
-        return messageDate >= today;
+        if(!msg.author.bot && !msg.content.startsWith('/')) {
+            return messageDate >= today;
+        }
     });
-
-    return todaysMessages;
+    const messagesToAI =  todaysMessages.map(msg => `${msg.author.username}: ${msg.content}`).join('\n').trim();
+    console.log(messagesToAI);
+    return messagesToAI;
 }
 
 client.login(process.env.DISCORD_TOKEN);
