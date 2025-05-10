@@ -46,9 +46,14 @@ client.on("interactionCreate", async (interaction) => {
             await interaction.reply("GOOD MORNING VIETNAM");
             break;
         case "tldr":
-             await interaction.reply({content: "2 sek", ephemeral: true});
-             const todaysMessages = await tldr(interaction);
-             await interaction.editReply(todaysMessages);
+            try {
+                await interaction.reply({content: "2 sek", ephemeral: true});
+                const todaysMessages = await tldr(interaction);
+                await interaction.editReply(todaysMessages);
+            } catch (error) {
+                console.error(error);
+                await interaction.reply("Error");
+            }
             break;
         default:
             await interaction.reply("Invalid command");
