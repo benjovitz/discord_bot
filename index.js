@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import OpenAI from "openai";
 dotenv.config();
 
 import { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } from "discord.js";
@@ -45,8 +46,9 @@ client.on("interactionCreate", async (interaction) => {
             await interaction.reply("GOOD MORNING VIETNAM");
             break;
         case "tldr":
-            const todaysMessages = await tldr(interaction);
-             await interaction.reply(todaysMessages);
+             await interaction.reply({content: "2 sek", ephemeral: true});
+             const todaysMessages = await tldr(interaction);
+             await interaction.editReply(todaysMessages);
             break;
         default:
             await interaction.reply("Invalid command");
@@ -66,8 +68,23 @@ async function tldr(interaction) {
         }
     });
     const messagesToAI =  todaysMessages.map(msg => `${msg.author.username}: ${msg.content}`).join('\n').trim();
-    console.log(messagesToAI);
-    return messagesToAI;
+    const returnMessage = await summarize(messagesToAI);
+    return returnMessage;
 }
 
 client.login(process.env.DISCORD_TOKEN);
+
+const openai = new OpenAI({
+    baseURL: 'https://openrouter.ai/api/v1',
+    apiKey: process.env.AI_TOKEN,
+});
+
+async function summarize(messages) {
+
+    const messageToAI = `Opsummer følgende beskeder som en TLDR. Start med overskriften TLDR; dit svar må ikke være længere end 2000 tegn: ${messages}`;
+    const response = await openai.chat.completions.create({
+        model: "qwen/qwen3-4b:free",
+        messages: [{role: "user", content: messageToAI }]
+    });
+    return response.choices[0].message.content;
+}
