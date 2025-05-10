@@ -1,5 +1,16 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
+import http from "http";
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello World\n');
+});
+
+
+
+
+
 dotenv.config();
 
 import { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } from "discord.js";
@@ -93,3 +104,8 @@ async function summarize(messages) {
     });
     return response.choices[0].message.content;
 }
+
+
+server.listen(3000, () => {
+    console.log('Server running at http://localhost:3000/');
+  });
