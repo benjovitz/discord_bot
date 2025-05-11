@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default async function tldr(interaction) {
+    await interaction.deferReply();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -16,7 +17,7 @@ export default async function tldr(interaction) {
     });
     const messagesToAI =  todaysMessages.map(msg => `${msg.author.username}: ${msg.content}`).join('\n').trim();
     const returnMessage = await summarize(messagesToAI);
-    return returnMessage;
+    await interaction.editReply(returnMessage);
 }
 
 async function summarize(messages) {

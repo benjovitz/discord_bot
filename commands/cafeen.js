@@ -15,15 +15,15 @@ async function getByteArray() {
 
 export default async function cafeen(interaction) {
     try {
-        await interaction.reply({ content: "Venter på svar fra cafeen", ephemeral: true });
+        await interaction.deferReply();
         const bytesArr = await getByteArray();
         const attachment = new AttachmentBuilder(bytesArr, { name: 'image.png' });
-        await interaction.followUp({ 
+        await interaction.editReply({ 
             content: "🍺 - Direkte fra cafeen", 
             files: [attachment],
         });
     } catch (err) {
         console.log(err);
-        await interaction.followUp({ content: "tester", ephemeral: true });
+        await interaction.editReply({ content: "tester" });
     }
 } 
