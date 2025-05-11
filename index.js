@@ -44,6 +44,25 @@ async function getByteArray() {
     return buffer;
 }
 
+
+client.on('messageCreate', async message => {
+    const channelId = process.env.DISCORD_CHANNEL_ID;
+  
+    if (message.channel.id === channelId && !message.author.bot) {
+      const isPullRequest = message.content.includes('https://github.com/benjovitz/discord_bot/pull');
+  
+      if (!isPullRequest) {
+        await message.delete();
+        await message.channel.send({
+          content: `${message.author}, only GitHub pull request links are allowed in this channel.`,
+          ephemeral: true
+        });
+      }
+    }
+  });
+  
+
+
 const commands = [
     new SlashCommandBuilder().setName("tldr").setDescription("Summarize a message"),
     new SlashCommandBuilder().setName("test").setDescription("Testing yo ass"),
