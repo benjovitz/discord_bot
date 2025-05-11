@@ -8,16 +8,18 @@ export default async function stfu(interaction) {
         return !msg.author.bot && messageDate >= today;
     });
 
-    // Count messages per user
+    // Count messages per user (by ID)
     const userMessageCount = new Map();
     todaysMessages.forEach(msg => {
-        const count = userMessageCount.get(msg.author.username) || 0;
-        userMessageCount.set(msg.author.username, count + 1);
+        const userId = msg.author.id;
+        const username = msg.author.username;
+        const count = userMessageCount.get(userId)?.count || 0;
+        userMessageCount.set(userId, { count: count + 1, username });
     });
 
     // Convert to array and sort by message count
     const sortedUsers = Array.from(userMessageCount.entries())
-        .sort((a, b) => b[1] - a[1])
+        .sort((a, b) => b[1].count - a[1].count)
         .slice(0, 10); // Get top 10 users
 
     let leaderboardMessage = "📊 **dagens største tomsnakkere** 📊\n\n";
@@ -27,10 +29,13 @@ export default async function stfu(interaction) {
         return;
     }
 
-    sortedUsers.forEach((user, index) => {
+    sortedUsers.forEach(([userId, userData], index) => {
         const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "▫️";
-        leaderboardMessage += `${medal} **${user[0]}**: ${user[1]} beskeder\n  ${user[0]}`;
+        leaderboardMessage += `${medal} <@${userId}> — **${userData.count}** besked${userData.count > 1 ? 'er' : ''}\n`;
     });
 
-    await interaction.reply({ content: leaderboardMessage, ephemeral: true });
+    const mostMessagesId = sortedUsers[0][0];
+    leaderboardMessage += `\n**<@${mostMessagesId}> har trippet mest i dag**`;
+
+    await interaction.reply({ content: leaderboardMessage });
 } 
