@@ -152,8 +152,9 @@ async function calculateTomsnak(interaction) {
 
 client.login(process.env.DISCORD_TOKEN);
 
-await redisClient.connect();
+/*
 client.on('messageCreate', async (message) => {
+    await redisClient.connect();
     const key = `${message.channel.guild.id}:${message.channel.id}`;
 
     const newMessageObject = {
@@ -172,6 +173,7 @@ client.on('messageCreate', async (message) => {
 
     await redisClient.quit();
 });
+*/
 
 const openai = new OpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
