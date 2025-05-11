@@ -6,6 +6,7 @@ import tldr from './commands/tldr.js';
 import test from './commands/test.js';
 import stfu from './commands/stfu.js';
 import cafeen from './commands/cafeen.js';
+import chancen from './commands/chancen.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -27,7 +28,20 @@ const commands = [
   new SlashCommandBuilder().setName("tldr").setDescription("Summarize a message"),
   new SlashCommandBuilder().setName("test").setDescription("Testing yo ass"),
   new SlashCommandBuilder().setName("stfu").setDescription("Show today's most active users"),
-  new SlashCommandBuilder().setName("cafeen").setDescription("Check if thommy is fire")
+  new SlashCommandBuilder().setName("cafeen").setDescription("Check if thommy is fire"),
+  new SlashCommandBuilder()
+    .setName("chancen")
+    .setDescription("Challenge another user to a random roll!")
+    .addUserOption(option =>
+      option.setName('user')
+        .setDescription('The user you want to challenge')
+        .setRequired(true)
+    )
+    .addIntegerOption(option =>
+      option.setName('max')
+        .setDescription('The max number to roll')
+        .setRequired(true)
+    ),
 ];
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -64,6 +78,9 @@ client.on("interactionCreate", async (interaction) => {
         break;
       case "cafeen":
         await cafeen(interaction);
+        break;
+      case "chancen":
+        await chancen(interaction);
         break;
       default:
         await interaction.reply("Invalid command");
