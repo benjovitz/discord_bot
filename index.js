@@ -1,19 +1,15 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import http from "http";
+import pkg from 'discord.js';
+const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, InteractionResponseFlags } = pkg;
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('Hello World\n');
 });
 
-
-
-
-
 dotenv.config();
-
-import { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } from "discord.js";
 
 const client = new Client({
   intents: [
@@ -59,22 +55,22 @@ client.on("interactionCreate", async (interaction) => {
             break;
         case "tldr":
             try {
-                await interaction.reply({content: "2 sek"});
+                await interaction.reply({content: "2 sek", ephemeral: true});
                 const todaysMessages = await tldr(interaction);
-                await interaction.editReply(todaysMessages);
+                await interaction.followUp(todaysMessages);
             } catch (error) {
                 console.error(error);
-                await interaction.reply("Error");
+                await interaction.reply({content: "Error", ephemeral: true});
             }
             break;
         case "stfu":
             try {
-                await interaction.reply({content: "Udregner..."});
+                await interaction.reply({content: "Udregner...", ephemeral: true});
                 const leaderboard = await calculateTomsnak(interaction);
-                await interaction.editReply(leaderboard);
+                await interaction.followUp(leaderboard);
             } catch (error) {
                 console.error(error);
-                await interaction.reply("fejl");
+                await interaction.reply({content: "fejl", ephemeral: true});
             }
             break;
         default:
