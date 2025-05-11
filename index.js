@@ -40,7 +40,7 @@ async function getCafeenHtml() {
 async function getByteArray() {
     const html = await getCafeenHtml(); 
     const arrayBuffer = await html.arrayBuffer();
-    const buffer =  Buffer.from(arrayBuffer)
+    const buffer = Buffer.from(arrayBuffer)
     return buffer;
 }
 
@@ -108,17 +108,15 @@ client.on("interactionCreate", async (interaction) => {
             try {
                 await interaction.reply({content : "Venter på svar fra cafeen", ephemeral: true});
                 const bytesArr = await getByteArray()
-                const attachment = new AttachmentBuilder(bytesArr, { name: 'image.png' }); // Specify the filename and extension
+                const attachment = new AttachmentBuilder(bytesArr, { name: 'cafeen-core.png' }); 
 
-                // Send the attachment to the user
                 await interaction.followUp({ 
-                    content: "🍺 - Direkte fra cafeen", 
-                    files: [attachment],  // Attach the file
-                    ephemeral: true        // Ensure it is an ephemeral message
+                    content: "🍺 - Direkte fra cafeen",
+                    files: [attachment], 
                 });
             } catch(err) {
                 console.log(err)
-                await interaction.followUp({content : "tester", ephemeral: true})
+                await interaction.followUp({content : "Cafeen har udfordringer - kontakt Cafeen", ephemeral: true})
             }
             break;
         default:
