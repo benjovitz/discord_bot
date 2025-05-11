@@ -1,4 +1,3 @@
-import { Client } from "discord.js";
 import crypto from 'crypto'
 
 export default async function getMidPerson(client) {
