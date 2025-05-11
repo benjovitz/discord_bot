@@ -59,7 +59,7 @@ client.on("interactionCreate", async (interaction) => {
             break;
         case "tldr":
             try {
-                await interaction.reply({content: "2 sek", ephemeral: true});
+                await interaction.reply({content: "2 sek"});
                 const todaysMessages = await tldr(interaction);
                 await interaction.editReply(todaysMessages);
             } catch (error) {
@@ -69,7 +69,7 @@ client.on("interactionCreate", async (interaction) => {
             break;
         case "stfu":
             try {
-                await interaction.reply({content: "Udregner...", ephemeral: true});
+                await interaction.reply({content: "Udregner..."});
                 const leaderboard = await calculateTomsnak(interaction);
                 await interaction.editReply(leaderboard);
             } catch (error) {
