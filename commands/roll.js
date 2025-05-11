@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-export default async function chancen(interaction) {
+export default async function roll(interaction) {
     const challenger = interaction.user;
     const opponent = interaction.options.getUser('user');
     const max = interaction.options.getInteger('max');
@@ -24,7 +24,7 @@ export default async function chancen(interaction) {
 
 
 
-    let resultMsg = `🎲 **Chancen!** 🎲\n<@${challenger.id}> vs <@${opponent.id}> (1-${max})\n\n`;
+    let resultMsg = `🎲 **Roll!** 🎲\n<@${challenger.id}> vs <@${opponent.id}> (1-${max})\n\n`;
     resultMsg += `<@${challenger.id}> rolled **${challengerRoll}**\n`;
     resultMsg += `<@${opponent.id}> rolled **${opponentRoll}**\n\n`;
 
