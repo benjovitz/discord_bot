@@ -6,7 +6,7 @@ import tldr from './commands/tldr.js';
 import test from './commands/test.js';
 import stfu from './commands/stfu.js';
 import cafeen from './commands/cafeen.js';
-import chancen from './commands/chancen.js';
+import roll from './commands/roll.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -30,7 +30,7 @@ const commands = [
   new SlashCommandBuilder().setName("stfu").setDescription("Show today's most active users"),
   new SlashCommandBuilder().setName("cafeen").setDescription("Check if thommy is fire"),
   new SlashCommandBuilder()
-    .setName("chancen")
+    .setName("roll")
     .setDescription("Challenge another user to a random roll!")
     .addUserOption(option =>
       option.setName('user')
@@ -79,8 +79,8 @@ client.on("interactionCreate", async (interaction) => {
       case "cafeen":
         await cafeen(interaction);
         break;
-      case "chancen":
-        await chancen(interaction);
+      case "roll":
+        await roll(interaction);
         break;
       default:
         await interaction.reply("Invalid command");
@@ -127,3 +127,4 @@ client.login(process.env.DISCORD_TOKEN);
 server.listen(3000, () => {
   console.log('Server running at http://localhost:3000/');
 });
+        
