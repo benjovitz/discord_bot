@@ -1,11 +1,13 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import http from "http";
+import { createClient } from "redis";
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('Hello World\n');
 });
+
 
 
 
@@ -22,6 +24,21 @@ const client = new Client({
     GatewayIntentBits.MessageContent
   ],
 });
+
+
+const redisClient = createClient({
+    password: process.env.REDIS_PASSWORD,
+    socket: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        tls: true
+    }
+})
+
+redisClient.connect().then(() => {
+    console.log("connected")
+    console.log("")
+})
 
 const commands = [
     new SlashCommandBuilder().setName("tldr").setDescription("Summarize a message"),
