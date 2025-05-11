@@ -1,11 +1,12 @@
 import http from 'http';
-import pkg, { AttachmentBuilder } from 'discord.js';
-const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } = pkg;
+import pkg, { AttachmentBuilder,  Client } from 'discord.js';
+const {  GatewayIntentBits, SlashCommandBuilder, REST, Routes } = pkg;
 import { getRedisClient } from './config/redis.js';
 import tldr from './commands/tldr.js';
 import test from './commands/test.js';
 import stfu from './commands/stfu.js';
 import cafeen from './commands/cafeen.js';
+import mid from './commands/mid.js'
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -18,6 +19,7 @@ const server = http.createServer((req, res) => {
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent
   ],
@@ -30,7 +32,10 @@ const commands = [
   new SlashCommandBuilder().setName("cafeen").setDescription("Check if thommy is fire")
 ];
 
+
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+
+mid(client);
 
 client.once("ready", async () => {
   try {
