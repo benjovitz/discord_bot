@@ -1,11 +1,13 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import http from "http";
+import { createClient } from "redis";
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('Hello World\n');
 });
+
 
 
 
@@ -22,6 +24,18 @@ const client = new Client({
     GatewayIntentBits.MessageContent
   ],
 });
+
+
+const redisClient = createClient({
+    password: process.env.REDIS_PASSWORD,
+    socket: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        tls: true
+    }
+})
+
+
 
 const commands = [
     new SlashCommandBuilder().setName("tldr").setDescription("Summarize a message"),
@@ -47,6 +61,11 @@ client.once("ready", async () => {
         console.error(error);
     }
 });
+
+
+
+
+
 
 client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand()) return;
@@ -137,12 +156,34 @@ async function calculateTomsnak(interaction) {
 
 client.login(process.env.DISCORD_TOKEN);
 
+client.on('messageCreate', async (message) => {
+    await redisClient.connect();
+    const key = `${message.channel.guild.id}:${message.channel.id}`;
+
+    const newMessageObject = {
+        content : message.content,
+        channelName : message.channel.name,
+        authorName : message.author.displayName,
+    }
+   
+
+    let data = await redisClient.get(key);
+    data = data ? JSON.parse(data) : { messages: [] };
+
+    data.messages.push(newMessageObject);
+
+    await redisClient.set(key, JSON.stringify(data));
+
+    await redisClient.quit();
+});
+
 const openai = new OpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
     apiKey: process.env.AI_TOKEN,
 });
 
 async function summarize(messages) {
+    const key = messages;
 
     const messageToAI = `Opsummer følgende beskeder som en TLDR. Start med overskriften TLDR; dit svar må ikke være længere end 2000 tegn: ${messages}`;
     const response = await openai.chat.completions.create({
