@@ -69,9 +69,7 @@ client.on("interactionCreate", async (interaction) => {
         await test(interaction);
         break;
       case "tldr":
-        await interaction.reply({ content: "2 sek", ephemeral: true });
         const tldrResult = await tldr(interaction);
-        await interaction.followUp(tldrResult);
         break;
       case "stfu":
         await stfu(interaction);
