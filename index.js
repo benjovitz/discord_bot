@@ -26,6 +26,7 @@ const client = new Client({
 const commands = [
     new SlashCommandBuilder().setName("tldr").setDescription("Summarize a message"),
     new SlashCommandBuilder().setName("test").setDescription("Testing yo ass"),
+    new SlashCommandBuilder().setName("stfu").setDescription("Show today's most active users"),
 ];
 
 // Register slash commands
@@ -66,6 +67,16 @@ client.on("interactionCreate", async (interaction) => {
                 await interaction.reply("Error");
             }
             break;
+        case "stfu":
+            try {
+                await interaction.reply({content: "Udregner...", ephemeral: true});
+                const leaderboard = await calculateTomsnak(interaction);
+                await interaction.editReply(leaderboard);
+            } catch (error) {
+                console.error(error);
+                await interaction.reply("fejl");
+            }
+            break;
         default:
             await interaction.reply("Invalid command");
             break;
@@ -88,6 +99,42 @@ async function tldr(interaction) {
     return returnMessage;
 }
 
+async function calculateTomsnak(interaction) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const messages = await interaction.channel.messages.fetch({ limit: 100 });
+    const todaysMessages = messages.filter(msg => {
+        const messageDate = new Date(msg.createdTimestamp);
+        return !msg.author.bot && messageDate >= today;
+    });
+
+    // Count messages per user
+    const userMessageCount = new Map();
+    todaysMessages.forEach(msg => {
+        const count = userMessageCount.get(msg.author.username) || 0;
+        userMessageCount.set(msg.author.username, count + 1);
+    });
+
+    // Convert to array and sort by message count
+    const sortedUsers = Array.from(userMessageCount.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10); // Get top 10 users
+
+    let leaderboardMessage = "📊 **dagens største tomsnakkere** 📊\n\n";
+    
+    if (sortedUsers.length === 0) {
+        return "No messages today yet";
+    }
+
+    sortedUsers.forEach((user, index) => {
+        const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "▫️";
+        leaderboardMessage += `${medal} **${user[0]}**: ${user[1]} beskeder\n **stfu ${user[0]}**`;
+    });
+
+    return leaderboardMessage;
+}
+
 client.login(process.env.DISCORD_TOKEN);
 
 const openai = new OpenAI({
@@ -104,7 +151,6 @@ async function summarize(messages) {
     });
     return response.choices[0].message.content;
 }
-
 
 server.listen(3000, () => {
     console.log('Server running at http://localhost:3000/');
