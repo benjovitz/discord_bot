@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import http from "http";
-import pkg from 'discord.js';
+import pkg, {AttachmentBuilder } from 'discord.js';
 const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, InteractionResponseFlags } = pkg;
 import { createClient } from "redis";
 
@@ -31,12 +31,24 @@ const redisClient = createClient({
     }
 })
 
+async function getCafeenHtml() {
+    const response = await fetch("https://www.cafeen.org/test.php?");
+    return await response.blob();
+}
 
+
+async function getByteArray() {
+    const html = await getCafeenHtml(); 
+    const arrayBuffer = await html.arrayBuffer();
+    const buffer =  Buffer.from(arrayBuffer)
+    return buffer;
+}
 
 const commands = [
     new SlashCommandBuilder().setName("tldr").setDescription("Summarize a message"),
     new SlashCommandBuilder().setName("test").setDescription("Testing yo ass"),
     new SlashCommandBuilder().setName("stfu").setDescription("Show today's most active users"),
+    new SlashCommandBuilder().setName("cafeen").setDescription("Check if thommy is fire")
 ];
 
 // Register slash commands
@@ -90,6 +102,23 @@ client.on("interactionCreate", async (interaction) => {
             } catch (error) {
                 console.error(error);
                 await interaction.reply({content: "fejl", ephemeral: true});
+            }
+            break;
+        case "cafeen":
+            try {
+                await interaction.reply({content : "Venter på svar fra cafeen", ephemeral: true});
+                const bytesArr = await getByteArray()
+                const attachment = new AttachmentBuilder(bytesArr, { name: 'image.png' }); // Specify the filename and extension
+
+                // Send the attachment to the user
+                await interaction.followUp({ 
+                    content: "🍺 - Direkte fra cafeen", 
+                    files: [attachment],  // Attach the file
+                    ephemeral: true        // Ensure it is an ephemeral message
+                });
+            } catch(err) {
+                console.log(err)
+                await interaction.followUp({content : "tester", ephemeral: true})
             }
             break;
         default:
