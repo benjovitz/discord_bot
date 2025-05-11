@@ -1,4 +1,3 @@
-import './config/dotenv.js';
 import http from 'http';
 import pkg, { AttachmentBuilder } from 'discord.js';
 const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } = pkg;
