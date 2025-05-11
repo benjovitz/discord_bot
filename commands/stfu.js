@@ -1,4 +1,6 @@
 export default async function stfu(interaction) {
+    await interaction.deferReply({ ephemeral: true });
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -51,7 +53,7 @@ export default async function stfu(interaction) {
 
     let leaderboardMessage = "📊 **dagens største tomsnakkere** 📊\n\n";
     if (sortedUsers.length === 0) {
-        await interaction.reply({ content: "No messages today yet", ephemeral: true });
+        await interaction.editReply({ content: "No messages today yet" });
         return;
     }
 
@@ -63,5 +65,5 @@ export default async function stfu(interaction) {
     const mostMessagesId = sortedUsers[0][0];
     leaderboardMessage += `\n**<@${mostMessagesId}> har trippet mest i dag**`;
 
-    await interaction.reply({ content: leaderboardMessage });
+    await interaction.editReply({ content: leaderboardMessage });
 } 
