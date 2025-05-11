@@ -1,5 +1,5 @@
 export default async function stfu(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply();
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
