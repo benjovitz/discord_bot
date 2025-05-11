@@ -23,7 +23,7 @@ export default async function tldr(interaction) {
 async function summarize(messages) {
     const openai = getOpenAI();
     const model = process.env.OPENAI_MODEL || "microsoft/phi-4-reasoning-plus:free";
-    const messageToAI = `Opsummer følgende beskeder som en TLDR. Start med overskriften TLDR; dit svar må ikke være længere end 2000 tegn: ${messages}`;
+    const messageToAI = `Opsummer følgende beskeder som en TLDR. start med en overskrift der passer til opsummering, dit svar må ikke være længere end 2000 tegn: ${messages} `;
     const response = await openai.chat.completions.create({
         model,
         messages: [{role: "user", content: messageToAI }]
