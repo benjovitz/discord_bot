@@ -6,7 +6,6 @@ import tldr from './commands/tldr.js';
 import test from './commands/test.js';
 import stfu from './commands/stfu.js';
 import cafeen from './commands/cafeen.js';
-import mid from './commands/mid.js'
 import roll from './commands/roll.js';
 import dotenv from 'dotenv';
 
