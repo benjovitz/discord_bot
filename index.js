@@ -48,7 +48,6 @@ const commands = [
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
-mid(client);
 
 client.once("ready", async () => {
   try {

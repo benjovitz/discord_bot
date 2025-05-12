@@ -1,5 +1,5 @@
-import crypto from 'crypto'
 /*
+import crypto from 'crypto'
 export default async function getMidPerson(client) {
     client.once("ready", async (e) => {
         setInterval(async () => {
