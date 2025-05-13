@@ -7,6 +7,7 @@ import test from './commands/test.js';
 import stfu from './commands/stfu.js';
 import cafeen from './commands/cafeen.js';
 import roll from './commands/roll.js';
+import duel from './commands/duel.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -41,6 +42,14 @@ const commands = [
     .addIntegerOption(option =>
       option.setName('max')
         .setDescription('The max number to roll')
+        .setRequired(true)
+    ),
+  new SlashCommandBuilder()
+    .setName("duel")
+    .setDescription("Challenge another user to a duel!")
+    .addUserOption(option =>
+      option.setName('user')
+        .setDescription('The user you want to challenge')
         .setRequired(true)
     ),
 ];
@@ -82,6 +91,9 @@ client.on("interactionCreate", async (interaction) => {
         break;
       case "roll":
         await roll(interaction);
+        break;
+      case "duel":
+        await duel(interaction);
         break;
       default:
         await interaction.reply("Invalid command");
