@@ -16,6 +16,10 @@ export default async function tldr(interaction) {
         }
     });
     const messagesToAI =  todaysMessages.map(msg => `${msg.author.username}: ${msg.content}`).join('\n').trim();
+    if(!messagesToAI) {
+        await interaction.editReply("ingen beskeder brors 🤡");
+        return;
+    }
     const returnMessage = await summarize(messagesToAI);
     await interaction.editReply(returnMessage);
 }
