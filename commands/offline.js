@@ -22,6 +22,8 @@ export default async function offlineCheck(client) {
             return; 
         }
 
+        
+
         const responses = [
             `Hvorfor er du på appear offline <@${message.author.id}>?? 💀`,
             `Ik chat når du på appear offline <@${message.author.id}>?? xdd`,
