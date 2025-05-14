@@ -1,4 +1,3 @@
-// Store when users last received a message
 const userCooldowns = new Map();
 const COOLDOWN_HOURS = 12;
 
