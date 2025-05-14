@@ -8,6 +8,7 @@ import stfu from './commands/stfu.js';
 import cafeen from './commands/cafeen.js';
 import roll from './commands/roll.js';
 import duel from './commands/duel.js';
+import offlineCheck from './commands/offline.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -22,7 +23,8 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildPresences
   ],
 });
 
@@ -67,6 +69,8 @@ client.once("ready", async () => {
     );
     console.log('Successfully reloaded application (/) commands.');
     console.log(`Logged in as ${client.user.tag}`);
+    
+    offlineCheck(client);
   } catch (error) {
     console.error(error);
   }
